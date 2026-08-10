@@ -21,7 +21,7 @@
 cmake_minimum_required (VERSION 3.28)
 
 project(sycl-point-cloud
-    VERSION "1.0.0"
+    VERSION "1.0.1"
     DESCRIPTION "An example SYCL project demonstrating the AdaptiveCpp compiler"
     HOMEPAGE_URL "https://github.com/SavaLione/sycl-point-cloud"
     LANGUAGES C CXX
@@ -39,6 +39,9 @@ set(BUILD_SHARED_LIBS OFF)
 
 # Provide compile commands for tools like clangd
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+
+# Suppress 'argument unused during compilation' warnings from AdaptiveCpp/Clang
+add_compile_options(-Qunused-arguments)
 
 # Set a default build type if none is specified
 if(NOT CMAKE_BUILD_TYPE)
@@ -108,3 +111,16 @@ add_sycl_to_target(
 target_include_directories(sycl-point-cloud-benchmarks PUBLIC "${PROJECT_SOURCE_DIR}/src")
 target_include_directories(sycl-point-cloud-benchmarks PUBLIC "${PROJECT_SOURCE_DIR}/benchmarks")
 target_link_libraries(sycl-point-cloud-benchmarks PRIVATE benchmark::benchmark)
+
+# Convert executable
+set(SPC_CONVERT_SRC
+    src/convert/sycl-point-cloud-convert.cpp
+    src/io.cpp
+    src/point.cpp
+    src/xgetopt/xgetopt.c
+)
+
+add_executable(sycl-point-cloud-convert ${SPC_CONVERT_SRC})
+
+target_include_directories(sycl-point-cloud-convert PUBLIC "${PROJECT_SOURCE_DIR}/src")
+target_include_directories(sycl-point-cloud-convert PUBLIC "${PROJECT_SOURCE_DIR}/src/convert")
