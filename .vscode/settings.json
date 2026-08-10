@@ -1,0 +1,32 @@
+{
+    // C++ project settings for sycl-point-cloud
+
+    // File formatting & encoding
+    "files.eol": "\n",
+    "files.encoding": "utf8",
+    "files.associations": {
+        "iostream": "cpp",
+        "ostream": "cpp"
+    },
+
+    // Editor & code style
+    "editor.tabSize": 4,
+    "editor.insertSpaces": true,
+    "editor.detectIndentation": false,
+
+    // Language tooling (Clang)
+    // Use the .clang-format file located in the root of the repository
+    "clangd.path": "/usr/bin/clangd-21",
+    "clang-format.executable": "/usr/bin/clang-format-21",
+    "clang-format.style": "file",
+    "clangd.arguments": [
+        "--pretty",
+        "--background-index",
+        "--query-driver=/usr/bin/clang++-21"
+    ],
+    
+    // Spell checking
+    // Project contains English language comments/strings
+    "cSpell.language": "en-US, ru-RU",
+    "cSpell.maxNumberOfProblems": 1000,
+}
