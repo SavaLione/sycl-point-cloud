@@ -35,6 +35,8 @@
 
 #include "xgetopt/xgetopt.h"
 #include "config.h"
+#include "dispatcher.h"
+#include "io.h"
 
 configuration parse_arguments(int argc, char **argv)
 {
@@ -47,20 +49,21 @@ configuration parse_arguments(int argc, char **argv)
     configuration result;
 
     // Accepted parameters
-    std::string const short_opts = "c:ld:r:s:q:b:hv";
+    std::string const short_opts = "c:ld:r:s:q:b:phv";
 
     // clang-format off
-    std::array<xoption, 10> long_options =
+    std::array<xoption, 11> long_options =
         {{
-            {"cloud",               xrequired_argument, nullptr, 'c'},
-            {"device-list",         xno_argument,       nullptr, 'l'},
-            {"device",              xrequired_argument, nullptr, 'd'},
-            {"radius",              xrequired_argument, nullptr, 'r'},
-            {"cell-size",           xrequired_argument, nullptr, 's'},
-            {"search-queries",      xrequired_argument, nullptr, 'q'},
-            {"batch-size",          xrequired_argument, nullptr, 'b'},
-            {"help",                xno_argument,       nullptr, 'h'},
-            {"version",             xno_argument,       nullptr, 'v'},
+            {"cloud",                 xrequired_argument, nullptr, 'c'},
+            {"device-list",           xno_argument,       nullptr, 'l'},
+            {"device",                xrequired_argument, nullptr, 'd'},
+            {"radius",                xrequired_argument, nullptr, 'r'},
+            {"cell-size",             xrequired_argument, nullptr, 's'},
+            {"search-queries",        xrequired_argument, nullptr, 'q'},
+            {"batch-size",            xrequired_argument, nullptr, 'b'},
+            {"dispatcher-prediction", xno_argument,       nullptr, 'p'},
+            {"help",                  xno_argument,       nullptr, 'h'},
+            {"version",               xno_argument,       nullptr, 'v'},
             {0, 0, 0, 0} // Sentinel
         }};
     // clang-format on
@@ -76,17 +79,30 @@ configuration parse_arguments(int argc, char **argv)
         switch(opt)
         {
             case 'c': result.cloud = xoptarg; break;
-            case 'l': result.print_device_list = true; break;
+            case 'l': print_all_sycl_devices(); exit(EXIT_SUCCESS); break;
             case 'd': result.device = xoptarg; break;
             case 'r': result.radius = std::stof(xoptarg); break;
             case 's': result.cell_size = std::stof(xoptarg); break;
             case 'q': result.search_queries =  parse_search_queries(xoptarg); break;
             case 'b': result.batch_size =  std::stoi(xoptarg); break; // FIXME: stoi -> size_t aware
+            case 'p': result.dispatcher_prediction = true; break;
             case 'h': print_help(); exit(EXIT_SUCCESS); break;
             case 'v': print_version(); exit(EXIT_SUCCESS); break;
             default: throw std::runtime_error("could not parse parameters, use --help for usage.");
         }
         // clang-format on
+    }
+
+    if(result.cloud == "")
+        throw std::runtime_error("the point cloud path can't be empty.");
+
+    if(result.batch_size <= 0)
+        throw std::runtime_error("the batch size can't be negative or zero.");
+
+    if(result.dispatcher_prediction)
+    {
+        print_dispatcher_prediction(result);
+        exit(EXIT_SUCCESS);
     }
 
     return result;
@@ -152,7 +168,7 @@ void print_all_sycl_devices()
         return;
     }
 
-    for (const auto& platform : platforms)
+    for(const auto &platform : platforms)
     {
         std::cout << "Platform: " << platform.get_info<sycl::info::platform::name>() << std::endl;
         std::cout << "Vendor:   " << platform.get_info<sycl::info::platform::vendor>() << std::endl;
@@ -161,30 +177,42 @@ void print_all_sycl_devices()
         // Get devices associated with the current platform
         std::vector<sycl::device> devices = platform.get_devices();
 
-        for (const auto& device : devices)
+        for(const auto &device : devices)
         {
             std::cout << "  Device: " << device.get_info<sycl::info::device::name>() << std::endl;
 
             // Determine the device type
-                std::cout << "  Type:   ";
-                if(device.is_gpu())
-                {
-                    std::cout << "GPU" << std::endl;
-                }
-                else if(device.is_cpu())
-                {
-                    std::cout << "CPU" << (device.is_host() ? " (host)" : "") << std::endl;
-                }
-                else if(device.is_accelerator())
-                {
-                    std::cout << "Accelerator" << std::endl;
-                }
-                else
-                {
-                    std::cout << "Unknown" << std::endl;
-                }
+            std::cout << "  Type:   ";
+            if(device.is_gpu())
+            {
+                std::cout << "GPU" << std::endl;
+            }
+            else if(device.is_cpu())
+            {
+                std::cout << "CPU" << (device.is_host() ? " (host)" : "") << std::endl;
+            }
+            else if(device.is_accelerator())
+            {
+                std::cout << "Accelerator" << std::endl;
+            }
+            else
+            {
+                std::cout << "Unknown" << std::endl;
+            }
 
-                std::cout << "  Driver: " << device.get_info<sycl::info::device::driver_version>() << std::endl;
+            std::cout << "  Driver: " << device.get_info<sycl::info::device::driver_version>() << std::endl;
         }
     }
+}
+
+void print_dispatcher_prediction(configuration const &c)
+{
+    std::vector<point_3d> point_cloud = load_point_cloud(c.cloud);
+
+    spatial_characteristics characteristics = analyze_point_cloud_fast(point_cloud, 256);
+    execution_target decision               = evaluate_dispatch_decision(characteristics);
+    std::cout << "Number of points: " << std::to_string(point_cloud.size()) << std::endl;
+    std::cout << "Dispatcher effective density: " << std::to_string(characteristics.effective_density) << std::endl;
+    std::cout << "Dispatcher normalized entropy: " << std::to_string(characteristics.normalized_entropy) << std::endl;
+    std::cout << "Dispatcher decision: " << ((decision == execution_target::sycl_gpu) ? "sycl_gpu" : "cpu_multithreaded") << std::endl;
 }

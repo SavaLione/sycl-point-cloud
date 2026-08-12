@@ -33,8 +33,12 @@
 
 void bm_sycl_gpu_compact_spatial_hashing(benchmark::State &state);
 void bm_sycl_cpu_compact_spatial_hashing(benchmark::State &state);
+void bm_sycl_gpu_compact_spatial_hashing_file(benchmark::State &state);
+void bm_sycl_cpu_compact_spatial_hashing_file(benchmark::State &state);
 
 BENCHMARK(bm_sycl_gpu_compact_spatial_hashing)->Apply(default_args);
 BENCHMARK(bm_sycl_cpu_compact_spatial_hashing)->Apply(default_args);
+BENCHMARK(bm_sycl_gpu_compact_spatial_hashing_file)->Unit(benchmark::kMillisecond);
+BENCHMARK(bm_sycl_cpu_compact_spatial_hashing_file)->Unit(benchmark::kMillisecond);
 
 #endif // BM_SYCL_COMPACT_SPATIAL_HASHING_H

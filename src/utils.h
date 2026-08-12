@@ -41,12 +41,12 @@
 struct configuration
 {
     std::string cloud                    = "";                   ///< Path to the point cloud file
-    bool print_device_list               = false;                ///< If true, print all available SYCL devices
     std::string device                   = "";                   ///< Specific SYCL device
     float radius                         = 2.5f;                 ///< Radius for the radius search
     float cell_size                      = radius / 2.0f;        ///< Compact spatial hashing, cell size
     std::vector<point_3d> search_queries = {{0.0f, 0.0f, 0.0f}}; ///< Radius search - radius queries
     std::size_t batch_size               = 500;                  ///< Batch size per a radius search query
+    bool dispatcher_prediction           = false;                ///< Out of a given point cloud, print a prediction
 };
 
 /**
@@ -80,5 +80,11 @@ std::vector<point_3d> parse_search_queries(std::string s);
  * @see https://github.com/SavaLione/sycl-acpp-example/blob/main/src/sycl-acpp-example.cpp
 */
 void print_all_sycl_devices();
+
+/**
+ * @brief Print the dispatcher's prediction for a given dataset
+ * @param c Configuration (user in order to find the dataset path)
+ */
+void print_dispatcher_prediction(configuration const &c);
 
 #endif // UTILS_H

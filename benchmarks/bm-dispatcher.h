@@ -32,7 +32,9 @@
 #include "bm-common.h"
 
 void bm_adaptive_dispatcher(benchmark::State &state);
+void bm_adaptive_dispatcher_file(benchmark::State &state);
 
 BENCHMARK(bm_adaptive_dispatcher)->Apply(default_args);
+BENCHMARK(bm_adaptive_dispatcher_file)->Unit(benchmark::kMillisecond);
 
 #endif // BM_DISPATCHER_H

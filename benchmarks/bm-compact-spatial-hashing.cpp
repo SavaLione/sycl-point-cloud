@@ -35,6 +35,7 @@
 #include "dataset-generator.h"
 #include "compact-spatial-hashing.h"
 #include "spatial-hashing.h"
+#include "io.h"
 
 // -----------------------------------------------------------------------------
 // Benchmark: CPU Compact Spatial Hashing and Radius Search
@@ -65,4 +66,36 @@ void bm_cpu_compact_spatial_hashing(benchmark::State &state)
         state.SetIterationTime(elapsed.count() / 1000.0);
     }
     state.SetItemsProcessed(state.iterations() * num_points);
+}
+
+void bm_cpu_compact_spatial_hashing_file(benchmark::State &state)
+{
+    const char *env = std::getenv("BENCHMARK_POINT_CLOUD");
+    if(!env)
+    {
+        state.SkipWithError("BENCHMARK_POINT_CLOUD environment variable is not set.");
+        return;
+    }
+
+    std::vector<point_3d> const cloud = load_point_cloud(env);
+    point_3d const query              = {0.0f, 0.0f, 0.0f};
+    float const radius                = 2.5f;
+    float const cell_size             = radius / 2.0f;
+
+    for(auto _ : state)
+    {
+        auto start = std::chrono::high_resolution_clock::now();
+
+        std::size_t const expected_capacity   = cloud.size() * 2;
+        std::size_t const table_size          = get_next_prime(expected_capacity);
+        compact_spatial_hash_table hash_table = build_compact_spatial_hash(cloud, cell_size, table_size);
+        auto results                          = radius_search(query, radius, cloud, hash_table);
+
+        auto end                                          = std::chrono::high_resolution_clock::now();
+        std::chrono::duration<double, std::milli> elapsed = end - start;
+
+        benchmark::DoNotOptimize(results);
+        state.SetIterationTime(elapsed.count() / 1000.0);
+    }
+    state.SetItemsProcessed(state.iterations() * cloud.size());
 }

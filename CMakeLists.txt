@@ -21,7 +21,7 @@
 cmake_minimum_required (VERSION 3.28)
 
 project(sycl-point-cloud
-    VERSION "1.0.1"
+    VERSION "1.0.2"
     DESCRIPTION "An example SYCL project demonstrating the AdaptiveCpp compiler"
     HOMEPAGE_URL "https://github.com/SavaLione/sycl-point-cloud"
     LANGUAGES C CXX

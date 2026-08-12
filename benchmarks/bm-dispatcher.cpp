@@ -30,6 +30,8 @@
 
 #include "dispatcher.h"
 #include "dataset-generator.h"
+#include "io.h"
+#include <cstdlib>
 
 void bm_adaptive_dispatcher(benchmark::State &state)
 {
@@ -61,4 +63,36 @@ void bm_adaptive_dispatcher(benchmark::State &state)
     state.counters["dataset_type"] = static_cast<double>(type);
 
     state.SetItemsProcessed(state.iterations() * num_points);
+}
+
+void bm_adaptive_dispatcher_file(benchmark::State &state)
+{
+    const char *env = std::getenv("BENCHMARK_POINT_CLOUD");
+    if(!env)
+    {
+        state.SkipWithError("BENCHMARK_POINT_CLOUD environment variable is not set.");
+        return;
+    }
+
+    std::vector<point_3d> const cloud = load_point_cloud(env);
+    spatial_characteristics characteristics {};
+    execution_target decision {execution_target::cpu_multithreaded};
+
+    for(auto _ : state)
+    {
+        characteristics = analyze_point_cloud_fast(cloud, 256);
+        decision        = evaluate_dispatch_decision(characteristics);
+
+        benchmark::DoNotOptimize(characteristics);
+        benchmark::DoNotOptimize(decision);
+    }
+
+    // Assign structural characteristics to benchmark output counters
+    state.counters["effective_density"]  = characteristics.effective_density;
+    state.counters["normalized_entropy"] = characteristics.normalized_entropy;
+
+    // Binary indicator for target execution pathway (1.0 = SYCL GPU, 0.0 = Multi-threaded CPU)
+    state.counters["decision_is_gpu"] = (decision == execution_target::sycl_gpu) ? 1.0 : 0.0;
+
+    state.SetItemsProcessed(state.iterations() * cloud.size());
 }
