@@ -32,7 +32,9 @@
 #include "bm-common.h"
 
 void bm_sycl_cpu_kd_tree(benchmark::State &state);
+void bm_sycl_cpu_kd_tree_file(benchmark::State &state);
 
 BENCHMARK(bm_sycl_cpu_kd_tree)->Apply(default_args);
+BENCHMARK(bm_sycl_cpu_kd_tree_file)->Unit(benchmark::kMillisecond);
 
 #endif // BM_SYCL_KD_TREE_H

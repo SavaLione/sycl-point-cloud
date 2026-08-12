@@ -47,18 +47,6 @@ int main(int argc, char **argv)
     try
     {
         config = parse_arguments(argc, argv);
-
-        if(config.print_device_list)
-        {
-            print_all_sycl_devices();
-            return EXIT_SUCCESS;
-        }
-
-        if(config.cloud == "")
-            throw std::runtime_error("the point cloud path can't be empty.");
-
-        if(config.batch_size <= 0)
-            throw std::runtime_error("the batch size can't be negative or zero.");
     }
     catch(std::exception const &e)
     {
@@ -87,7 +75,7 @@ int main(int argc, char **argv)
 
     // Dispatcher decision
     spatial_characteristics characteristics = analyze_point_cloud_fast(point_cloud, 256);
-    execution_target decision = evaluate_dispatch_decision(characteristics);
+    execution_target decision               = evaluate_dispatch_decision(characteristics);
     std::cout << "Dispatcher effective density: " << std::to_string(characteristics.effective_density) << std::endl;
     std::cout << "Dispatcher normalized entropy: " << std::to_string(characteristics.normalized_entropy) << std::endl;
     std::cout << "Dispatcher decision: " << ((decision == execution_target::sycl_gpu) ? "sycl_gpu" : "cpu_multithreaded") << std::endl;
@@ -98,7 +86,7 @@ int main(int argc, char **argv)
         auto r = radius_search_dispatcher(point_cloud, config.search_queries, config.radius, config.cell_size, config.batch_size);
         print_radius_search_results(r);
     }
-    catch (sycl::exception const& e)
+    catch(sycl::exception const &e)
     {
         std::cerr << "sycl-point-cloud: SYCL exception: " << e.what() << std::endl;
         return EXIT_FAILURE;

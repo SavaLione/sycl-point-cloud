@@ -7,9 +7,13 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 ## [Unreleased]
 ### Added
 - Added changelog
-- ~~Added new benchmarks for real dataset testing~~
+- Added benchmarks for real dataset testing
 - Added new sections in the readme
 - Added a tool for converting datasets
+- Added new conversions to the converter
 
 ### Fixed
 - Fixed some minor typos
+
+### Changed
+- Suppressed warnings from AdaptiveCpp/Clang (`warning: argument unused during compilation: '-c'`)

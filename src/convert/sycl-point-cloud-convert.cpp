@@ -236,6 +236,18 @@ void convert(std::string source, std::string destination, file_type source_type,
         converted = true;
     }
 
+    if(source_type == file_type::XYZ_INTENSITY_RGB && destination_type == file_type::PLY)
+    {
+        save_point_cloud_ply(destination, load_point_cloud_xyz_intensity_rgb(source));
+        converted = true;
+    }
+
+    if(source_type == file_type::BINARY && destination_type == file_type::PLY)
+    {
+        save_point_cloud_ply(destination, load_point_cloud(source));
+        converted = true;
+    }
+
     if(!converted)
         throw std::runtime_error("Conversion from " + file_type_to_string(source_type) + " to " + file_type_to_string(destination_type) + " is not supported.");
 }
