@@ -18,18 +18,19 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with sycl-point-cloud. If not, see <https://www.gnu.org/licenses/>.
-*/
+ */
 /**
  * @file radius-search.cpp
- * @brief 
+ * @brief Provides a dispatcher-aware execution wrapper for routing radius search queries to the optimal computational device.
  * @author Savelii Pototskii
  * @copyright Copyright (C) 2026 Savelii Pototskii (savalione.com)
  * @copyright SPDX-License-Identifier: GPL-3.0-or-later
-*/
+ */
 #include "radius-search.h"
 
-#include <hipSYCL/sycl/device_selector.hpp>
 #include <sycl/sycl.hpp>
+#include <iostream>
+
 #include "dispatcher.h"
 #include "spatial-hashing.h"
 #include "compact-spatial-hashing.h"
@@ -147,8 +148,6 @@ std::vector<std::vector<point_3d>> radius_search_dispatcher(
         return result;
     }
 }
-
-#include <iostream>
 
 void print_radius_search_results(std::vector<std::vector<point_3d>> const &r)
 {

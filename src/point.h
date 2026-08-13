@@ -18,20 +18,22 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with sycl-point-cloud. If not, see <https://www.gnu.org/licenses/>.
-*/
+ */
 /**
  * @file point.h
- * @brief 
+ * @brief Defines the fundamental three-dimensional point structure and memory layout requirements.
  * @author Savelii Pototskii
  * @copyright Copyright (C) 2026 Savelii Pototskii (savalione.com)
  * @copyright SPDX-License-Identifier: GPL-3.0-or-later
-*/
+ */
 #ifndef POINT_H
 #define POINT_H
 
 #include <iostream>
 
-// 3D point in space
+/**
+ * @brief Representation of a 3D point in space.
+ */
 struct point_3d
 {
     float x, y, z;

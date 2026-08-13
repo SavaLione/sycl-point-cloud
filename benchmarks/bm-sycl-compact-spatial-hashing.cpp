@@ -18,14 +18,14 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with sycl-point-cloud. If not, see <https://www.gnu.org/licenses/>.
-*/
+ */
 /**
  * @file bm-sycl-compact-spatial-hashing.cpp
- * @brief 
+ * @brief Benchmark suite for evaluating SYCL-accelerated compact spatial hashing across heterogeneous target devices.
  * @author Savelii Pototskii
  * @copyright Copyright (C) 2026 Savelii Pototskii (savalione.com)
  * @copyright SPDX-License-Identifier: GPL-3.0-or-later
-*/
+ */
 #include "bm-sycl-compact-spatial-hashing.h"
 
 #include <sycl/sycl.hpp>
@@ -37,9 +37,6 @@
 #include "spatial-hashing.h"
 #include "io.h"
 
-// -----------------------------------------------------------------------------
-// Benchmark: SYCL GPU Compact Spatial Hashing (Isolated Latencies) and Radius Search
-// -----------------------------------------------------------------------------
 void bm_sycl_gpu_compact_spatial_hashing(benchmark::State &state)
 {
     std::size_t const num_points = state.range(0);
@@ -178,10 +175,6 @@ void bm_sycl_gpu_compact_spatial_hashing_file(benchmark::State &state)
         sycl::free(d_result_counts, q);
     }
 }
-
-// -----------------------------------------------------------------------------
-// Benchmark: SYCL CPU Compact Spatial Hashing (Isolated Latencies) and Radius Search
-// -----------------------------------------------------------------------------
 
 void bm_sycl_cpu_compact_spatial_hashing(benchmark::State &state)
 {

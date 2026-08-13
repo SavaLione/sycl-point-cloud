@@ -18,14 +18,14 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with sycl-point-cloud. If not, see <https://www.gnu.org/licenses/>.
-*/
+ */
 /**
  * @file sycl-point-cloud.h
- * @brief 
+ * @brief Main application entry point for the SYCL-based heterogeneous point cloud processing framework.
  * @author Savelii Pototskii
  * @copyright Copyright (C) 2026 Savelii Pototskii (savalione.com)
  * @copyright SPDX-License-Identifier: GPL-3.0-or-later
-*/
+ */
 #ifndef SYCL_POINT_CLOUD_H
 #define SYCL_POINT_CLOUD_H
 

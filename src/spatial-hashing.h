@@ -18,22 +18,26 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with sycl-point-cloud. If not, see <https://www.gnu.org/licenses/>.
-*/
+ */
 /**
  * @file spatial-hashing.h
- * @brief 
+ * @brief Defines the standard, non-compact spatial hashing structures and search algorithms for the CPU.
  * @author Savelii Pototskii
  * @copyright Copyright (C) 2026 Savelii Pototskii (savalione.com)
  * @copyright SPDX-License-Identifier: GPL-3.0-or-later
-*/
+ */
 #ifndef SPATIAL_HASHING_H
 #define SPATIAL_HASHING_H
 
 #include "point.h"
 #include <vector>
 
-// The index of the outer vector is the hash value
-// The inner vector contains the indices of the points in the cloud
+/**
+ * @brief Holds a spatial hash table.
+ * 
+ * The index of the outer vector is the hash value.
+ * The inner vector contains the indices of the points in the cloud.
+ */
 struct spatial_hash_table
 {
     float cell_size;
@@ -60,30 +64,49 @@ struct spatial_hash_table
     }
 };
 
-// Computes a 1D hash index from 3D discrete voxel coordinates
-// Utilizes large prime numbers to distribute the coordinates
+/**
+ * @brief Computes a one-dimensional hash index from three-dimensional discrete voxel coordinates.
+ * 
+ * Utilizes large prime numbers to distribute spatial coordinates uniformly, minimizing harmonic resonance and structural collisions.
+ * 
+ * @param[in] x The discrete voxel coordinate along the X-axis.
+ * @param[in] y The discrete voxel coordinate along the Y-axis.
+ * @param[in] z The discrete voxel coordinate along the Z-axis.
+ * @param[in] table_size The total allocated capacity of the hash table.
+ * @return The computed scalar hash index.
+ */
 std::size_t compute_hash_index(int const x, int const y, int const z, std::size_t const table_size);
 
-// Constructs the spatial hash table from the point cloud
+/**
+ * @brief Constructs a standard non-compact spatial hash table from the given spatial dataset.
+ * 
+ * @param[in] cloud The input spatial dataset representing the point cloud.
+ * @param[in] cell_size The linear dimension of a single discretization voxel.
+ * @param[in] table_size The total allocated capacity of the hash table.
+ * @return A constructed spatial hash table containing dynamically allocated buckets.
+ */
 spatial_hash_table build_spatial_hash(std::vector<point_3d> const &cloud, float const cell_size, std::size_t const table_size);
 
 // Performs a radius search using the spatial hash table
 // Because multiple distinct voxels may hash to the same bucket (collisions), the strict Euclidean distance check eliminates false positives
 std::vector<std::size_t> radius_search(point_3d const &query, float const radius, std::vector<point_3d> const &cloud, spatial_hash_table const &hash_table);
 
-// To achieve an optimal balance between memory consumption and collision probability, the hash table size must scale linearly with the number of points (O(N))
-// A standard heuristic in computational geometry is to allocate a table size that is a prime number strictly greater than a multiple of the point cloud size
-// A load factor constraint (e.g., table size ~~= 2N) is typically employed
-//
-// The use of a prime number prevents harmonic resonance between the discrete spatial coordinates and the modulo operator, thereby minimizing structural hash collisions
-//
-// Evaluates whether a given integer is a prime number.
+/**
+ * @brief Evaluates whether a given unsigned integer is a prime number.
+ * 
+ * @param[in] n The integer to evaluate.
+ * @return True if the integer is a prime number, false otherwise.
+ */
 bool is_prime(std::size_t const n);
 
-// Computes the next prime number greater than or equal to n.
+/**
+ * @brief Computes the next prime number strictly greater than or equal to the specified boundary.
+ * 
+ * Applied to guarantee a prime table size, ensuring optimal load factors and reducing collision probability.
+ * 
+ * @param[in] n The numerical lower bound.
+ * @return The nearest prime number greater than or equal to the lower bound.
+ */
 std::size_t get_next_prime(std::size_t n);
-// Recommended usage in the main function:
-// std::size_t const expected_capacity = point_cloud.size() * 2;
-// std::size_t const table_size = get_next_prime(expected_capacity);
 
 #endif // SPATIAL_HASHING_H

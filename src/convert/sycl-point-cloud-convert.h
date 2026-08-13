@@ -18,14 +18,14 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with sycl-point-cloud. If not, see <https://www.gnu.org/licenses/>.
-*/
+ */
 /**
  * @file sycl-point-cloud-convert.h
- * @brief 
+ * @brief Provides a standalone command-line utility for converting point cloud datasets between supported file formats.
  * @author Savelii Pototskii
  * @copyright Copyright (C) 2026 Savelii Pototskii (savalione.com)
  * @copyright SPDX-License-Identifier: GPL-3.0-or-later
-*/
+ */
 #ifndef SYCL_POINT_CLOUD_CONVERT_H
 #define SYCL_POINT_CLOUD_CONVERT_H
 
@@ -34,57 +34,58 @@
 
 #include "point.h"
 
-
+/**
+ * @brief Supported file formats for conversion.
+ */
 enum file_type
 {
-    BINARY            = 0,
-    PLY               = 1,
-    XYZ_INTENSITY_RGB = 2,
+    BINARY            = 0, ///< Binary point cloud representation: [number of points][point 0][point 1][point 2] ... [point N]
+    PLY               = 1, ///< The polygon file format (Stanford PLY)
+    XYZ_INTENSITY_RGB = 2, ///< ASCII text format containing X, Y, Z coordinates, intensity, and RGB color channels
     UNKNOWN           = 3,
 };
 
 /**
- * @brief Converts a string to a file type
- * @param s String to convert
- * @return The file type (UNKNOWN if the file type is not known)
+ * @brief Converts a string to a file type.
+ * @param[in] s String to convert.
+ * @return The file type (UNKNOWN if the file type is not known).
  */
 file_type string_to_file_type(std::string s);
 
 /**
- * @brief Converts a file type to a string
- * @param t File type to convert
- * @return The string
+ * @brief Converts a file type to a string.
+ * @param[in] t File type to convert.
+ * @return The string.
  */
 std::string file_type_to_string(file_type t);
 
 /**
- * @struct configuration
  * @brief Holds the application's configuration settings, parsed from command-line arguments.
  */
 struct configuration
 {
-    std::string file_source      = "";                 ///< Path to the file that has to be converted
-    std::string file_destination = "";                 ///< Path to the conversion result
-    file_type source_type        = file_type::UNKNOWN; ///< Source file type
-    file_type destination_type   = file_type::UNKNOWN; ///< Destination file type
+    std::string file_source      = "";                 ///< Path to the file that has to be converted.
+    std::string file_destination = "";                 ///< Path to the conversion result.
+    file_type source_type        = file_type::UNKNOWN; ///< Source file type.
+    file_type destination_type   = file_type::UNKNOWN; ///< Destination file type.
 };
 
 /**
- * @brief Parses command-line arguments and populates a configuration struct
- * @param argc Argument count from `main`
- * @param argv Argument vector from `main`
- * @return A populated `configuration` struct
- * @throws std::runtime_error on parsing failure or invalid arguments
+ * @brief Parses command-line arguments and populates a configuration struct.
+ * @param argc Argument count from `main`.
+ * @param argv Argument vector from `main`.
+ * @return A populated `configuration` struct.
+ * @throws std::runtime_error on parsing failure or invalid arguments.
  */
 configuration parse_arguments(int argc, char **argv);
 
 /**
- * @brief Prints help information that is invoked by `-h` or `--help`
+ * @brief Prints help information that is invoked by `-h` or `--help`.
  */
 void print_help();
 
 /**
- * @brief Prints version information that is invoked by `-v` or `--version`
+ * @brief Prints version information that is invoked by `-v` or `--version`.
  */
 void print_version();
 
@@ -96,6 +97,15 @@ void print_version();
  */
 std::vector<point_3d> load_point_cloud_xyz_intensity_rgb(std::string const &filename);
 
+/**
+ * @brief Translates point cloud data from the specified source file format to the destination format.
+ * 
+ * @param[in] source The file path of the input dataset.
+ * @param[in] destination The file path of the output dataset.
+ * @param[in] source_type The structural format enumeration of the input file.
+ * @param[in] destination_type The structural format enumeration of the output file.
+ * @throws std::runtime_error If the required format transition is unsupported.
+ */
 void convert(std::string source, std::string destination, file_type source_type, file_type destination_type);
 
 #endif // SYCL_POINT_CLOUD_CONVERT_H

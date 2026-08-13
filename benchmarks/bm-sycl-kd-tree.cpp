@@ -18,14 +18,14 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with sycl-point-cloud. If not, see <https://www.gnu.org/licenses/>.
-*/
+ */
 /**
  * @file bm-sycl-kd-tree.cpp
- * @brief 
+ * @brief Benchmark suite for evaluating the construction and search latencies of a K-D tree structure within the SYCL environment.
  * @author Savelii Pototskii
  * @copyright Copyright (C) 2026 Savelii Pototskii (savalione.com)
  * @copyright SPDX-License-Identifier: GPL-3.0-or-later
-*/
+ */
 #include "bm-sycl-kd-tree.h"
 
 #include <sycl/sycl.hpp>
@@ -36,9 +36,6 @@
 #include "dataset-generator.h"
 #include "io.h"
 
-// -----------------------------------------------------------------------------
-// Benchmark: SYCL CPU K-D Tree Construction and Radius Search
-// -----------------------------------------------------------------------------
 void bm_sycl_cpu_kd_tree(benchmark::State &state)
 {
     std::size_t const num_points = state.range(0);

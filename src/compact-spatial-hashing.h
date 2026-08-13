@@ -18,20 +18,25 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with sycl-point-cloud. If not, see <https://www.gnu.org/licenses/>.
-*/
+ */
 /**
  * @file compact-spatial-hashing.h
- * @brief 
+ * @brief Defines structures and algorithms for compact spatial hashing, utilizing prefix sums to optimize memory access patterns in heterogeneous environments.
  * @author Savelii Pototskii
  * @copyright Copyright (C) 2026 Savelii Pototskii (savalione.com)
  * @copyright SPDX-License-Identifier: GPL-3.0-or-later
-*/
+ */
 #ifndef COMPACT_SPATIAL_HASHING_H
 #define COMPACT_SPATIAL_HASHING_H
 
-#include "point.h"
 #include <vector>
+#include <sycl/sycl.hpp>
 
+#include "point.h"
+
+/**
+ * @brief Continuous memory representation of a compact spatial hash table.
+ */
 struct compact_spatial_hash_table
 {
     float cell_size;
@@ -69,15 +74,44 @@ struct compact_spatial_hash_table
     }
 };
 
-// Constructs the compact spatial hash using a counting and prefix-sum methodology.
+/**
+ * @brief Constructs a compact spatial hash table using a counting and prefix-sum methodology.
+ * 
+ * @param[in] cloud The input spatial dataset representing the point cloud.
+ * @param[in] cell_size The linear dimension of a single discretization voxel.
+ * @param[in] table_size The total allocated capacity of the hash table (should be a prime number).
+ * @return A constructed compact spatial hash table containing continuous memory layouts.
+ */
 compact_spatial_hash_table build_compact_spatial_hash(std::vector<point_3d> const &cloud, float const cell_size, std::size_t const table_size);
 
-// Radius search on compact spatial hashing
+/**
+ * @brief Executes a radius search query using the CPU implementation of compact spatial hashing.
+ * 
+ * @param[in] query The three-dimensional spatial coordinates of the search center.
+ * @param[in] radius The search radius defining the spherical boundary.
+ * @param[in] cloud The input spatial dataset.
+ * @param[in] hash_table The pre-constructed compact spatial hash table.
+ * @return A standard vector containing the original indices of all points residing within the specified radius.
+ */
 std::vector<std::size_t> radius_search(point_3d const &query, float const radius, std::vector<point_3d> const &cloud, compact_spatial_hash_table const &hash_table);
 
-#include <sycl/sycl.hpp>
-
-// Batched radius search in SYCL
+/**
+ * @brief Executes a batched radius search query in the heterogeneous SYCL environment.
+ * 
+ * @param[in] q The active SYCL execution queue.
+ * @param[in] d_queries Device pointer to the array of query coordinates.
+ * @param[in] num_queries The total number of independent search queries.
+ * @param[in] radius The search radius defining the spherical boundary.
+ * @param[in] d_cloud Device pointer to the input spatial dataset.
+ * @param[in] num_points The total number of spatial coordinates in the dataset.
+ * @param[in] cell_size The linear dimension of a single discretization voxel.
+ * @param[in] table_size The total allocated capacity of the hash table.
+ * @param[in] d_bucket_offsets Device pointer to the prefix-sum bucket offsets array.
+ * @param[in] d_point_indices Device pointer to the densely packed array of point indices.
+ * @param[out] d_results Device pointer to the flattened output array storing search results.
+ * @param[out] d_result_counts Device pointer to the output array storing the number of matches per query.
+ * @param[in] max_results_per_query The maximum allowed number of matching points to store per query.
+ */
 void radius_search_sycl(
     sycl::queue &q,
     point_3d const *d_queries,
@@ -93,7 +127,17 @@ void radius_search_sycl(
     std::size_t *d_result_counts, // Array of size num_queries to store hit counts
     std::size_t const max_results_per_query);
 
-// Builds the hash table arrays directly in USM memory
+/**
+ * @brief Constructs the compact spatial hash table directly within USM via SYCL.
+ * 
+ * @param[in] q The active SYCL execution queue.
+ * @param[in] d_cloud Device pointer to the input spatial dataset.
+ * @param[in] num_points The total number of spatial coordinates in the dataset.
+ * @param[in] cell_size The linear dimension of a single discretization voxel.
+ * @param[in] table_size The total allocated capacity of the hash table.
+ * @param[out] d_bucket_offsets Device pointer to the array receiving prefix-sum bucket offsets.
+ * @param[out] d_point_indices Device pointer to the array receiving sorted point indices.
+ */
 void build_spatial_hash_sycl(
     sycl::queue &q,
     point_3d const *d_cloud,

@@ -18,14 +18,14 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with sycl-point-cloud. If not, see <https://www.gnu.org/licenses/>.
-*/
+ */
 /**
  * @file probe-density.cpp
- * @brief 
+ * @brief Implements constant-time complexity heuristics for evaluating structural resolution and normalized spatial entropy of point clouds.
  * @author Savelii Pototskii
  * @copyright Copyright (C) 2026 Savelii Pototskii (savalione.com)
  * @copyright SPDX-License-Identifier: GPL-3.0-or-later
-*/
+ */
 #include "probe-density.h"
 
 #include <cmath>

@@ -18,20 +18,20 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with sycl-point-cloud. If not, see <https://www.gnu.org/licenses/>.
-*/
+ */
 /**
  * @file utils.cpp
- * @brief 
+ * @brief Provides auxiliary routines for command-line argument parsing, environment inspection, and application configuration.
  * @author Savelii Pototskii
  * @copyright Copyright (C) 2026 Savelii Pototskii (savalione.com)
  * @copyright SPDX-License-Identifier: GPL-3.0-or-later
-*/
+ */
 #include "utils.h"
 
+#include <sycl/sycl.hpp>
 #include <stdexcept>
 #include <string>
 #include <iostream>
-#include <sycl/sycl.hpp>
 
 #include "xgetopt/xgetopt.h"
 #include "config.h"

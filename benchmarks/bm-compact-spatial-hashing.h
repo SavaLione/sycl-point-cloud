@@ -18,20 +18,31 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with sycl-point-cloud. If not, see <https://www.gnu.org/licenses/>.
-*/
+ */
 /**
  * @file bm-compact-spatial-hashing.h
- * @brief Benchmark for CPU compact spatial hashing and radius search
+ * @brief Benchmark suite for evaluating the performance of compact spatial hashing and radius search execution on the CPU.
  * @author Savelii Pototskii
  * @copyright Copyright (C) 2026 Savelii Pototskii (savalione.com)
  * @copyright SPDX-License-Identifier: GPL-3.0-or-later
-*/
+ */
 #ifndef BM_COMPACT_SPATIAL_HASHING_H
 #define BM_COMPACT_SPATIAL_HASHING_H
 
 #include "bm-common.h"
 
+/**
+ * @brief Evaluates the computation latency of compact spatial hashing construction on a CPU.
+ * 
+ * @param[in,out] state The Google Benchmark state object tracking execution iterations and timing counters.
+ */
 void bm_cpu_compact_spatial_hashing(benchmark::State &state);
+
+/**
+ * @brief Evaluates the computation latency of compact spatial hashing construction on a CPU utilizing a realistic dataset retrieved from the file system.
+ * 
+ * @param[in,out] state The Google Benchmark state object tracking execution iterations and timing counters.
+ */
 void bm_cpu_compact_spatial_hashing_file(benchmark::State &state);
 
 BENCHMARK(bm_cpu_compact_spatial_hashing)->Apply(default_args);

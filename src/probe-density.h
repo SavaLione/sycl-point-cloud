@@ -18,25 +18,28 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with sycl-point-cloud. If not, see <https://www.gnu.org/licenses/>.
-*/
+ */
 /**
  * @file probe-density.h
- * @brief 
+ * @brief Implements constant-time complexity heuristics for evaluating structural resolution and normalized spatial entropy of point clouds.
  * @author Savelii Pototskii
  * @copyright Copyright (C) 2026 Savelii Pototskii (savalione.com)
  * @copyright SPDX-License-Identifier: GPL-3.0-or-later
-*/
+ */
 #ifndef PROBE_DENSITY_H
 #define PROBE_DENSITY_H
 
 #include "point.h"
 #include <vector>
 
+/**
+ * @brief Spatial characteristics metrics.
+ */
 struct spatial_characteristics
 {
-    std::size_t total_points;
-    float effective_density;
-    float normalized_entropy; // [0.0, 1.0]: 1.0 = Uniform distribution, lower = High clustering
+    std::size_t total_points; ///< Number of the points in a point cloud.
+    float effective_density;  ///< Effective density.
+    float normalized_entropy; ///< Normalized entropy in the interval [0.0, 1.0]: 1.0 = uniform distribution, lower = high clustering
 };
 
 /**
