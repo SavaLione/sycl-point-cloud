@@ -18,45 +18,53 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with sycl-point-cloud. If not, see <https://www.gnu.org/licenses/>.
-*/
+ */
 /**
  * @file sycl-kd-tree.h
- * @brief 
+ * @brief Implements an array-backed, cache-coherent K-D tree structure written for SIMT architectures using SYCL.
  * @author Savelii Pototskii
  * @copyright Copyright (C) 2026 Savelii Pototskii (savalione.com)
  * @copyright SPDX-License-Identifier: GPL-3.0-or-later
-*/
+ */
 #ifndef SYCL_KD_TREE_H
 #define SYCL_KD_TREE_H
 
 #include <sycl/sycl.hpp>
 #include <cstddef>
 #include <cstdint>
+
 #include "point.h"
 
+/**
+ * @brief Represents a single node in an array-backed, cache-coherent K-D tree.
+ */
 struct sycl_kd_node
 {
-    point_3d point;
-    std::size_t original_index;
-    std::int32_t left_child;  // Offset in flat array (-1 if null)
-    std::int32_t right_child; // Offset in flat array (-1 if null)
-    std::uint8_t axis;        // 0 = X, 1 = Y, 2 = Z
+    point_3d point;             ///< 3D spatial coordinates of the node's point.
+    std::size_t original_index; ///< Index of the point within the original input point cloud dataset.
+    std::int32_t left_child;    ///< Flat array index of the left child node (`-1` if leaf/null).
+    std::int32_t right_child;   ///< Flat array index of the right child node (`-1` if leaf/null).
+    std::uint8_t axis;          ///< Coordinate axis used for spatial partitioning at this depth level (0 = X, 1 = Y, 2 = Z).
 };
 
-// Internal representation for tracking input spatial coordinates alongside host/device indices
+/**
+ * @brief Internal representation for tracking input spatial coordinates alongside host/device indices.
+ */
 struct indexed_point_sycl
 {
-    point_3d pt;
-    std::size_t original_idx;
+    point_3d pt;              ///< 3D spatial coordinates of the point.
+    std::size_t original_idx; ///< Index of the point within the original input point cloud dataset.
 };
 
-// Internal structure representing a sub-range partitioning task for breadth-first queueing
+/**
+ * @brief Internal structure representing a sub-range partitioning task for breadth-first queueing.
+ */
 struct alignas(16) range_task
 {
-    std::size_t start;
-    std::size_t end;
-    std::int32_t node_idx;
-    std::uint8_t depth;
+    std::size_t start;     ///< Inclusive starting index of the point sub-range in the working array.
+    std::size_t end;       ///< Exclusive ending index of the point sub-range in the working array.
+    std::int32_t node_idx; ///< Flat array location where the output @ref sycl_kd_node will be written.
+    std::uint8_t depth;    ///< Tree depth level of this task, used to compute the split axis (`depth % 3`).
 };
 
 /**

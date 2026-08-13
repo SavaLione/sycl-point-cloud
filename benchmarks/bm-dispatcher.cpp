@@ -18,20 +18,21 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with sycl-point-cloud. If not, see <https://www.gnu.org/licenses/>.
-*/
+ */
 /**
  * @file bm-dispatcher.cpp
- * @brief The SYCL dispatcher benchmark
+ * @brief Benchmark suite for evaluating the computational overhead and routing accuracy of the adaptive dispatcher.
  * @author Savelii Pototskii
  * @copyright Copyright (C) 2026 Savelii Pototskii (savalione.com)
  * @copyright SPDX-License-Identifier: GPL-3.0-or-later
-*/
+ */
 #include "bm-dispatcher.h"
+
+#include <cstdlib>
 
 #include "dispatcher.h"
 #include "dataset-generator.h"
 #include "io.h"
-#include <cstdlib>
 
 void bm_adaptive_dispatcher(benchmark::State &state)
 {

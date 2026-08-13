@@ -18,19 +18,28 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with sycl-point-cloud. If not, see <https://www.gnu.org/licenses/>.
-*/
+ */
 /**
  * @file sycl-kd-tree.cpp
- * @brief 
+ * @brief Implements an array-backed, cache-coherent K-D tree structure written for SIMT architectures using SYCL.
  * @author Savelii Pototskii
  * @copyright Copyright (C) 2026 Savelii Pototskii (savalione.com)
  * @copyright SPDX-License-Identifier: GPL-3.0-or-later
-*/
+ */
 #include "sycl-kd-tree.h"
+
 #include <algorithm>
-#include <cmath>
 
 // Device-side iterative quickselect partitioning routine to bypass recursive stack limits
+/**
+ * @brief Partitions a sub-array along a given spatial axis to locate the median element.
+ * 
+ * @param[in,out] data Device pointer to the array of `indexed_point_sycl` structures being partitioned.
+ * @param[in] left The inclusive starting index of the sub-array range.
+ * @param[in] right The exclusive ending index of the sub-array range.
+ * @param[in] axis The coordinate dimension to partition along (0 for X, 1 for Y, 2 for Z).
+ * @return The index `k` corresponding to the median position of the sub-array.
+ */
 inline std::size_t device_quickselect_median(indexed_point_sycl *data, std::size_t left, std::size_t right, std::uint8_t const axis)
 {
     std::size_t const k = left + (right - left) / 2;

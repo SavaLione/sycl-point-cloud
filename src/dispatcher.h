@@ -18,23 +18,26 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with sycl-point-cloud. If not, see <https://www.gnu.org/licenses/>.
-*/
+ */
 /**
  * @file dispatcher.h
- * @brief 
+ * @brief Implements the adaptive dispatcher based on the topological transition model for optimal hardware routing of spatial queries.
  * @author Savelii Pototskii
  * @copyright Copyright (C) 2026 Savelii Pototskii (savalione.com)
  * @copyright SPDX-License-Identifier: GPL-3.0-or-later
-*/
+ */
 #ifndef DISPATCHER_H
 #define DISPATCHER_H
 
 #include "probe-density.h"
 
+/**
+ * @brief Suggested execution target.
+ */
 enum class execution_target
 {
-    cpu_multithreaded,
-    sycl_gpu
+    cpu_multithreaded, ///< SYCL-compatible CPU target.
+    sycl_gpu           ///< A SYCL-compatible GPU target.
 };
 
 /**

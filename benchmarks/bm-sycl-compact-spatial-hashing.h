@@ -18,22 +18,45 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with sycl-point-cloud. If not, see <https://www.gnu.org/licenses/>.
-*/
+ */
 /**
  * @file bm-sycl-compact-spatial-hashing.h
- * @brief 
+ * @brief Benchmark suite for evaluating SYCL-accelerated compact spatial hashing across heterogeneous target devices.
  * @author Savelii Pototskii
  * @copyright Copyright (C) 2026 Savelii Pototskii (savalione.com)
  * @copyright SPDX-License-Identifier: GPL-3.0-or-later
-*/
+ */
 #ifndef BM_SYCL_COMPACT_SPATIAL_HASHING_H
 #define BM_SYCL_COMPACT_SPATIAL_HASHING_H
 
 #include "bm-common.h"
 
+/**
+ * @brief Evaluates the computation latency of compact spatial hashing construction and radius search on a SYCL-compatible GPU target.
+ * 
+ * @param[in,out] state The Google Benchmark state object tracking execution iterations and timing counters.
+ */
 void bm_sycl_gpu_compact_spatial_hashing(benchmark::State &state);
+
+/**
+ * @brief Evaluates the computation latency of compact spatial hashing construction and radius search on a SYCL-compatible CPU target.
+ * 
+ * @param[in,out] state The Google Benchmark state object tracking execution iterations and timing counters.
+ */
 void bm_sycl_cpu_compact_spatial_hashing(benchmark::State &state);
+
+/**
+ * @brief Evaluates the computation latency of compact spatial hashing construction and radius search on a SYCL-compatible GPU target utilizing a realistic dataset retrieved from the file system.
+ * 
+ * @param[in,out] state The Google Benchmark state object tracking execution iterations and timing counters.
+ */
 void bm_sycl_gpu_compact_spatial_hashing_file(benchmark::State &state);
+
+/**
+ * @brief Evaluates the computation latency of compact spatial hashing construction and radius search on a SYCL-compatible GPU target utilizing a realistic dataset retrieved from the file system.
+ * 
+ * @param[in,out] state The Google Benchmark state object tracking execution iterations and timing counters.
+ */
 void bm_sycl_cpu_compact_spatial_hashing_file(benchmark::State &state);
 
 BENCHMARK(bm_sycl_gpu_compact_spatial_hashing)->Apply(default_args);

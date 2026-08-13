@@ -18,14 +18,14 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with sycl-point-cloud. If not, see <https://www.gnu.org/licenses/>.
-*/
+ */
 /**
  * @file io.h
- * @brief 
+ * @brief Provides input and output routines for reading and writing point cloud datasets in different formats.
  * @author Savelii Pototskii
  * @copyright Copyright (C) 2026 Savelii Pototskii (savalione.com)
  * @copyright SPDX-License-Identifier: GPL-3.0-or-later
-*/
+ */
 #include "io.h"
 
 #include <iostream>

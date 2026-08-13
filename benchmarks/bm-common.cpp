@@ -18,14 +18,14 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with sycl-point-cloud. If not, see <https://www.gnu.org/licenses/>.
-*/
+ */
 /**
  * @file bm-common.cpp
- * @brief 
+ * @brief Provides common utilities, shared configuration, and default argument definitions for the benchmark suites.
  * @author Savelii Pototskii
  * @copyright Copyright (C) 2026 Savelii Pototskii (savalione.com)
  * @copyright SPDX-License-Identifier: GPL-3.0-or-later
-*/
+ */
 #include "bm-common.h"
 
 void default_args(benchmark::internal::Benchmark *b)

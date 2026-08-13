@@ -18,14 +18,14 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with sycl-point-cloud. If not, see <https://www.gnu.org/licenses/>.
-*/
+ */
 /**
  * @file dataset-generator.h
- * @brief 
+ * @brief Provides deterministic algorithms for generating synthetic point cloud datasets with specific spatial entropy and structural characteristics.
  * @author Savelii Pototskii
  * @copyright Copyright (C) 2026 Savelii Pototskii (savalione.com)
  * @copyright SPDX-License-Identifier: GPL-3.0-or-later
-*/
+ */
 #ifndef DATASET_GENERATOR_H
 #define DATASET_GENERATOR_H
 
@@ -33,13 +33,15 @@
 #include <vector>
 #include <random>
 
-// Synthetic dataset generator
+/**
+ * @brief Dataset types for the synthetic dataset generator.
+ */
 enum class dataset_type
 {
-    uniform,
-    gaussian_clusters,
-    sparse_lidar,
-    hyper_clustered ///< (very low entropy)
+    uniform,           ///< Uniform distribution. \f$E \approx 0.82-0.84\f$
+    gaussian_clusters, ///< Gaussian clusters. \f$E \approx 0.65\f$
+    sparse_lidar,      ///< Imitation of sparse lidar data. \f$E \approx 0.77\f$
+    hyper_clustered    ///< Very low entropy. \f$E \approx 0.25\f$
 };
 
 /**
@@ -81,12 +83,6 @@ std::vector<point_3d> generate_gaussian_clusters(std::size_t num_points, std::si
  */
 std::vector<point_3d> generate_lidar_simulation(std::size_t num_points, std::size_t num_rings, float max_radius, std::mt19937 &gen);
 
-
-// Usage example:
-// std::vector<point_3d> point_cloud_uniform_10kk = generate_dataset(1000*1000*10, dataset_type::uniform);
-// std::vector<point_3d> point_cloud_gaussian_clusters_10kk = generate_dataset(1000*1000*10, dataset_type::gaussian_clusters);
-// std::vector<point_3d> point_cloud_sparse_lidar_10kk = generate_dataset(1000*1000*10, dataset_type::sparse_lidar);
-// std::vector<point_3d> point_cloud_hyper_clustered_10kk = generate_dataset(1000*1000*10, dataset_type::hyper_clustered);
 /**
  * @brief Unified interface for generating synthetic point cloud datasets.
  * 
@@ -95,6 +91,13 @@ std::vector<point_3d> generate_lidar_simulation(std::size_t num_points, std::siz
  * @param num_points The total number of elements required in the dataset.
  * @param type The desired spatial distribution classification.
  * @return std::vector<point_3d> An array containing the generated point cloud.
+ *
+ * @code
+ * std::vector<point_3d> point_cloud_uniform_10kk = generate_dataset(1000*1000*10, dataset_type::uniform);
+ * std::vector<point_3d> point_cloud_gaussian_clusters_10kk = generate_dataset(1000*1000*10, dataset_type::gaussian_clusters);
+ * std::vector<point_3d> point_cloud_sparse_lidar_10kk = generate_dataset(1000*1000*10, dataset_type::sparse_lidar);
+ * std::vector<point_3d> point_cloud_hyper_clustered_10kk = generate_dataset(1000*1000*10, dataset_type::hyper_clustered);
+ * @endcode
  */
 std::vector<point_3d> generate_dataset(std::size_t num_points, dataset_type type);
 

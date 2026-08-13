@@ -18,20 +18,31 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with sycl-point-cloud. If not, see <https://www.gnu.org/licenses/>.
-*/
+ */
 /**
  * @file bm-sycl-kd-tree.h
- * @brief 
+ * @brief Benchmark suite for evaluating the construction and search latencies of a K-D tree structure within the SYCL environment.
  * @author Savelii Pototskii
  * @copyright Copyright (C) 2026 Savelii Pototskii (savalione.com)
  * @copyright SPDX-License-Identifier: GPL-3.0-or-later
-*/
+ */
 #ifndef BM_SYCL_KD_TREE_H
 #define BM_SYCL_KD_TREE_H
 
 #include "bm-common.h"
 
+/**
+ * @brief Evaluates the computation latency of K-D tree construction and radius search on a SYCL-compatible CPU target.
+ * 
+ * @param[in,out] state The Google Benchmark state object tracking execution iterations and timing counters.
+ */
 void bm_sycl_cpu_kd_tree(benchmark::State &state);
+
+/**
+ * @brief Evaluates the computation latency of the SYCL K-D tree utilizing a realistic dataset retrieved from the file system.
+ * 
+ * @param[in,out] state The Google Benchmark state object tracking execution iterations and timing counters.
+ */
 void bm_sycl_cpu_kd_tree_file(benchmark::State &state);
 
 BENCHMARK(bm_sycl_cpu_kd_tree)->Apply(default_args);

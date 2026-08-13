@@ -18,14 +18,14 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with sycl-point-cloud. If not, see <https://www.gnu.org/licenses/>.
-*/
+ */
 /**
  * @file dataset-generator.cpp
- * @brief 
+ * @brief Provides deterministic algorithms for generating synthetic point cloud datasets with specific spatial entropy and structural characteristics.
  * @author Savelii Pototskii
  * @copyright Copyright (C) 2026 Savelii Pototskii (savalione.com)
  * @copyright SPDX-License-Identifier: GPL-3.0-or-later
-*/
+ */
 #include "dataset-generator.h"
 
 std::vector<point_3d> generate_uniform_noise(std::size_t num_points, float extent, std::mt19937 &gen)

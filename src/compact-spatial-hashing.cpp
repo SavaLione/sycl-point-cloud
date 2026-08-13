@@ -18,18 +18,19 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with sycl-point-cloud. If not, see <https://www.gnu.org/licenses/>.
-*/
+ */
 /**
  * @file compact-spatial-hashing.cpp
- * @brief 
+ * @brief Defines structures and algorithms for compact spatial hashing, utilizing prefix sums to optimize memory access patterns in heterogeneous environments.
  * @author Savelii Pototskii
  * @copyright Copyright (C) 2026 Savelii Pototskii (savalione.com)
  * @copyright SPDX-License-Identifier: GPL-3.0-or-later
-*/
+ */
 #include "compact-spatial-hashing.h"
 
-#include "spatial-hashing.h"
 #include <cmath>
+
+#include "spatial-hashing.h"
 
 // Constructs the compact spatial hash using a counting and prefix-sum methodology
 compact_spatial_hash_table build_compact_spatial_hash(std::vector<point_3d> const &cloud, float const cell_size, std::size_t const table_size)
