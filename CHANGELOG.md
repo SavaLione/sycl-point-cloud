@@ -12,6 +12,8 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 - Added a tool for converting datasets
 - Added new conversions to the converter
 - Added documentation
+- Added help information about the application (`-h`, `--help` flags)
+- Added usage examples to the readme
 
 ### Fixed
 - Fixed some minor typos
