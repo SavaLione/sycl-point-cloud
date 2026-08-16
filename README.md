@@ -42,6 +42,26 @@ Run the compiled executable:
 ./sycl-point-cloud
 ```
 
+Enumerate and display all available SYCL platforms and devices:
+```sh
+./sycl-point-cloud --device-list
+```
+
+Run the application with the search radius for neighborhood queries of 1.5 and the spatial hashing cell dimension of 0.75:
+```sh
+./sycl-point-cloud -c dataset.bin -r 1.5 -s 0.75
+```
+
+Run the application with search queries `10.0,5.0,-2.5` and `0.0,0.0,0.0`, and number of query points processed per batch of 1000:
+```sh
+./sycl-point-cloud -c dataset.bin -q 10.0,5.0,-2.5,0.0,0.0,0.0 -b 1000
+```
+
+Perform spatial analysis and output the execution target prediction without executing the radius search:
+```sh
+./sycl-point-cloud -c dataset.bin --dispatcher-prediction
+```
+
 Run all benchmarks (it may take some time):
 ```sh
 ./sycl-point-cloud-benchmarks

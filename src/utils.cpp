@@ -110,8 +110,33 @@ configuration parse_arguments(int argc, char **argv)
 
 void print_help()
 {
-    std::string help =
-        R"(
+    std::string const help =
+        R"(sycl-point-cloud: Accelerated 3D point cloud radius search with dynamic execution target routing.
+
+Usage:
+  sycl-point-cloud -c <path> [options...]
+  sycl-point-cloud -l
+  sycl-point-cloud -h | -v
+
+Options:
+  -c, --cloud <path>                  Required (for computation). Path to the input point cloud file.
+  -l, --device-list                   Enumerate and display all available SYCL platforms and devices.
+  -d, --device <name>                 Explicitly select a target SYCL device by name substring.
+  -r, --radius <float>                Search radius for neighborhood queries. (default: 2.5)
+  -s, --cell-size <float>             Spatial hashing cell dimension. (default: radius / 2.0)
+  -q, --search-queries <coords>       Comma-separated query coordinates (x1,y1,z1,x2,y2,z2,...).
+                                      (default: 0.0,0.0,0.0)
+  -b, --batch-size <uint>             Number of query points processed per batch. (default: 500)
+  -p, --dispatcher-prediction         Perform spatial analysis and output the execution target prediction
+                                      without executing the radius search.
+  -h, --help                          Display this help text and exit.
+  -v, --version                       Display application version and license information and exit.
+
+Examples:
+  sycl-point-cloud --device-list
+  sycl-point-cloud -c dataset.bin -r 1.5 -s 0.75
+  sycl-point-cloud -c dataset.bin -q 10.0,5.0,-2.5,0.0,0.0,0.0 -b 1000
+  sycl-point-cloud -c dataset.bin --dispatcher-prediction
 )";
 
     std::cout << help << std::endl;
