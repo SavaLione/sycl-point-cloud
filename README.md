@@ -82,9 +82,9 @@ Specify point cloud and run specific benchmark:
 BENCHMARK_POINT_CLOUD=sg27_station3_intensity_rgb.bin ./sycl-point-cloud-benchmarks --benchmark_filter=bm_adaptive_dispatcher_file
 ```
 
-Convert an xyz intensity rgb type point cloud to a binary representation:
+Convert an xyz intensity rgb type point cloud to the binary representation:
 ```sh
-./sycl-point-cloud-convert --file-source in.txt --file-destination out.ply --source-type xyz_intensity_rgb --destination-type binary
+./sycl-point-cloud-convert --file-source in.txt --file-destination out.bin --source-type xyz_intensity_rgb --destination-type binary
 ```
 
 ## Licenses and Acknowledgements
