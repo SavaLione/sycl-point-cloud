@@ -17,6 +17,7 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 - Added a benchmark for the spatial density probe algorithm across varying grid resolutions and sample sizes
 - Added common arguments for benchmarks
 - Added new metrics to some benchmarks
+- Changed new metrics and documentation the compact spatial hashing (CPU) benchmark
 
 ### Fixed
 - Fixed some minor typos

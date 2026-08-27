@@ -43,24 +43,23 @@ void bm_cpu_compact_spatial_hashing(benchmark::State &state)
     dataset_type const type      = static_cast<dataset_type>(state.range(1));
 
     auto const cloud      = generate_dataset(num_points, type);
-    point_3d const query  = {0.0f, 0.0f, 0.0f};
+    point_3d const query  = cloud[0]; // FIXME - The benchmark should pick N random points and then calculate median distribution of results
     float const radius    = 2.5f;
     float const cell_size = radius / 2.0f;
 
     for(auto _ : state)
     {
-        auto start = std::chrono::high_resolution_clock::now();
+        auto start = std::chrono::high_resolution_clock::now(); // FIXME - All counters should be added to the benchmark results
 
         std::size_t const expected_capacity   = cloud.size() * 2;
         std::size_t const table_size          = get_next_prime(expected_capacity);
         compact_spatial_hash_table hash_table = build_compact_spatial_hash(cloud, cell_size, table_size);
         auto results                          = radius_search(query, radius, cloud, hash_table);
 
-        auto end                                          = std::chrono::high_resolution_clock::now();
-        std::chrono::duration<double, std::milli> elapsed = end - start;
+        auto end                                          = std::chrono::high_resolution_clock::now(); // FIXME - All counters should be added to the benchmark results
+        std::chrono::duration<double, std::milli> elapsed = end - start;                               // FIXME - All counters should be added to the benchmark results
 
         benchmark::DoNotOptimize(results);
-        state.SetIterationTime(elapsed.count() / 1000.0);
     }
     state.SetItemsProcessed(state.iterations() * num_points);
 }
@@ -74,25 +73,52 @@ void bm_cpu_compact_spatial_hashing_file(benchmark::State &state)
         return;
     }
 
-    std::vector<point_3d> const cloud = load_point_cloud(env);
-    point_3d const query              = {0.0f, 0.0f, 0.0f};
-    float const radius                = 2.5f;
-    float const cell_size             = radius / 2.0f;
+    std::size_t num_points      = state.range(0);
+    std::vector<point_3d> cloud = load_point_cloud(env);
+    point_3d const query        = {cloud[0]}; // FIXME - The benchmark should pick N random points and then calculate median distribution of results
+    float const radius          = 2.5f;
+    float const cell_size       = radius / 2.0f;
+
+    // Make the cloud smaller
+    if(num_points != 0)
+    {
+        if(cloud.size() >= num_points)
+        {
+            cloud.resize(num_points);
+        }
+        else
+        {
+            state.SkipWithMessage("Provided cloud size is smaller than the suggested testing cloud size.");
+            return;
+        }
+    }
+    else
+    {
+        num_points = cloud.size();
+    }
+
+    if(cloud.empty())
+    {
+        state.SkipWithError("Provided cloud is empty.");
+        return;
+    }
 
     for(auto _ : state)
     {
-        auto start = std::chrono::high_resolution_clock::now();
+        auto start = std::chrono::high_resolution_clock::now(); // FIXME - All counters should be added to the benchmark results
 
         std::size_t const expected_capacity   = cloud.size() * 2;
         std::size_t const table_size          = get_next_prime(expected_capacity);
         compact_spatial_hash_table hash_table = build_compact_spatial_hash(cloud, cell_size, table_size);
         auto results                          = radius_search(query, radius, cloud, hash_table);
 
-        auto end                                          = std::chrono::high_resolution_clock::now();
-        std::chrono::duration<double, std::milli> elapsed = end - start;
+        auto end                                          = std::chrono::high_resolution_clock::now(); // FIXME - All counters should be added to the benchmark results
+        std::chrono::duration<double, std::milli> elapsed = end - start;                               // FIXME - All counters should be added to the benchmark results
 
         benchmark::DoNotOptimize(results);
-        state.SetIterationTime(elapsed.count() / 1000.0);
     }
-    state.SetItemsProcessed(state.iterations() * cloud.size());
+
+    state.SetLabel("file=" + std::string(env));
+
+    state.SetItemsProcessed(state.iterations() * num_points);
 }
