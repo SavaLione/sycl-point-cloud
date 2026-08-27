@@ -143,7 +143,7 @@ Supported File Types:
 
 Examples:
   sycl-point-cloud-convert -s input.ply -d output.bin -i ply -o binary
-  sycl-point-cloud-convert --file-source in.txt --file-destination out.ply --source-type xyz_intensity_rgb --destination-type ply
+  sycl-point-cloud-convert --file-source in.txt --file-destination out.bin --source-type xyz_intensity_rgb --destination-type binary
 )";
 
     std::cout << help << std::endl;
