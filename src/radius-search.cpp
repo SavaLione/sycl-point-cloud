@@ -29,7 +29,6 @@
 #include "radius-search.h"
 
 #include <sycl/sycl.hpp>
-#include <iostream>
 
 #include "dispatcher.h"
 #include "spatial-hashing.h"
@@ -38,11 +37,8 @@
 std::vector<std::vector<point_3d>> radius_search_dispatcher(
     std::vector<point_3d> const &point_cloud, std::vector<point_3d> const &host_queries, float search_radius, float cell_size, std::size_t const max_results_per_query)
 {
-    spatial_characteristics characteristics = analyze_point_cloud_fast(point_cloud, 256);
+    spatial_characteristics characteristics = probe_density<8>(point_cloud, 4096);
     execution_target decision               = evaluate_dispatch_decision(characteristics);
-    // std::cout << "Dispatcher effective density: " << std::to_string(characteristics.effective_density) << std::endl;
-    // std::cout << "Dispatcher normalized entropy: " << std::to_string(characteristics.normalized_entropy) << std::endl;
-    // std::cout << "Dispatcher decision: " << ((decision == execution_target::sycl_gpu) ? "sycl_gpu" : "cpu_multithreaded") << std::endl;
     std::vector<std::vector<point_3d>> result;
 
     if(decision == execution_target::sycl_gpu)
@@ -52,7 +48,6 @@ std::vector<std::vector<point_3d>> radius_search_dispatcher(
         std::size_t const num_queries       = host_queries.size(); // Basically points to search (see query_point)
 
         sycl::queue q(sycl::gpu_selector_v); // GPU // TODO: Write a custom selector
-        // std::cout << "Execution target device: " << q.get_device().get_info<sycl::info::device::name>() << std::endl;
 
         // USM device memory allocation
         // Allocate memory explicitly on the device to guarantee PCIe transfer boundaries

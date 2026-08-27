@@ -30,7 +30,8 @@
 
 #include <cmath>
 
-spatial_characteristics analyze_point_cloud_fast(std::vector<point_3d> const &cloud, std::size_t sample_size)
+template<std::size_t grid_dim>
+spatial_characteristics probe_density(std::vector<point_3d> const &cloud, std::size_t sample_size)
 {
     std::size_t const n = cloud.size();
     if(n == 0)
@@ -38,13 +39,17 @@ spatial_characteristics analyze_point_cloud_fast(std::vector<point_3d> const &cl
         return {0, 0.0f, 0.0f};
     }
 
-    std::size_t const m      = std::min(sample_size, n);
+    std::size_t const m      = std::min<std::size_t>(sample_size, n);
     std::size_t const stride = std::max<std::size_t>(1, n / m);
 
     // Calculate mean and standard deviation over sample M
     double sum_x = 0.0, sum_y = 0.0, sum_z = 0.0;
     for(std::size_t i = 0; i < m; ++i)
     {
+        // FIXME
+        // `cloud[i * stride]` should be replaced with a random generator
+        // There is a std::mt19937 implementation somewhere in some local branch, but there may be something better than std::mt19937.
+        // Also, all benchmarks should accept a view of point clouds, so there are no copying and less issues with `stride`.
         point_3d const &p = cloud[i * stride];
         sum_x += p.x;
         sum_y += p.y;
@@ -59,6 +64,10 @@ spatial_characteristics analyze_point_cloud_fast(std::vector<point_3d> const &cl
     double var_x = 0.0, var_y = 0.0, var_z = 0.0;
     for(std::size_t i = 0; i < m; ++i)
     {
+        // FIXME
+        // `cloud[i * stride]` should be replaced with a random generator
+        // There is a std::mt19937 implementation somewhere in some local branch, but there may be something better than std::mt19937.
+        // Also, all benchmarks should accept a view of point clouds, so there are no copying and less issues with `stride`.
         point_3d const &p = cloud[i * stride];
         float const dx    = p.x - mean_x;
         float const dy    = p.y - mean_y;
@@ -76,8 +85,7 @@ spatial_characteristics analyze_point_cloud_fast(std::vector<point_3d> const &cl
     float const effective_volume  = 64.0f * std_x * std_y * std_z;
     float const effective_density = static_cast<float>(n) / effective_volume;
 
-    // Coarse voxel entropy over an 8x8x8 grid (512 total cells)
-    constexpr std::size_t grid_dim    = 8;
+    // Coarse voxel entropy over a grid
     constexpr std::size_t total_cells = grid_dim * grid_dim * grid_dim;
     std::array<std::size_t, total_cells> voxel_counts {};
 
@@ -115,9 +123,13 @@ spatial_characteristics analyze_point_cloud_fast(std::vector<point_3d> const &cl
         }
     }
 
-    // Normalize entropy to [0.0, 1.0] range relative to H_max = log2(512) = 9.0
-    constexpr double max_entropy   = 9.0;
+    // Dynamically calculate max entropy based on the configured grid
+    double const max_entropy       = std::log2(static_cast<double>(total_cells));
     float const normalized_entropy = static_cast<float>(entropy / max_entropy);
 
     return {n, effective_density, normalized_entropy};
 }
+
+template spatial_characteristics probe_density<4>(std::vector<point_3d> const &cloud, std::size_t sample_size);
+template spatial_characteristics probe_density<8>(std::vector<point_3d> const &cloud, std::size_t sample_size);
+template spatial_characteristics probe_density<16>(std::vector<point_3d> const &cloud, std::size_t sample_size);

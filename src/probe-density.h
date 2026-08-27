@@ -45,10 +45,12 @@ struct spatial_characteristics
 /**
  * @brief Computes spatial characteristics in O(M) time using a fixed sub-sample.
  * 
+ * @tparam grid_dim Linear resolution of the voxel grid per axis (default of 8 should be enough).
  * @param cloud Full input point cloud buffer.
- * @param sample_size Constant number of points to evaluate (default: 256).
+ * @param sample_size Constant number of points to evaluate (default: 4096).
  * @return spatial_characteristics Calculated metrics.
  */
-spatial_characteristics analyze_point_cloud_fast(std::vector<point_3d> const &cloud, std::size_t sample_size = 256);
+template <std::size_t grid_dim>
+spatial_characteristics probe_density(std::vector<point_3d> const &cloud, std::size_t sample_size = 4096);
 
 #endif // PROBE_DENSITY_H

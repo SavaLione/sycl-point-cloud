@@ -234,7 +234,7 @@ void print_dispatcher_prediction(configuration const &c)
 {
     std::vector<point_3d> point_cloud = load_point_cloud(c.cloud);
 
-    spatial_characteristics characteristics = analyze_point_cloud_fast(point_cloud, 256);
+    spatial_characteristics characteristics = probe_density<8>(point_cloud, 4096);
     execution_target decision               = evaluate_dispatch_decision(characteristics);
     std::cout << "Number of points: " << std::to_string(point_cloud.size()) << std::endl;
     std::cout << "Dispatcher effective density: " << std::to_string(characteristics.effective_density) << std::endl;
