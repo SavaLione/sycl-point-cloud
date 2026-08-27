@@ -34,18 +34,21 @@
 /**
  * @brief Evaluates the computation latency of compact spatial hashing construction on a CPU.
  * 
- * @param[in,out] state The Google Benchmark state object tracking execution iterations and timing counters.
+ * @param[in,out] state Google Benchmark state object containing invocation parameters:
+ *                      - state.range(0): Total number of points in the dataset.
+ *                      - state.range(1): Dataset topology type (dataset_type enum).
  */
 void bm_cpu_compact_spatial_hashing(benchmark::State &state);
 
 /**
  * @brief Evaluates the computation latency of compact spatial hashing construction on a CPU utilizing a realistic dataset retrieved from the file system.
  * 
- * @param[in,out] state The Google Benchmark state object tracking execution iterations and timing counters.
+ * @param[in,out] state Google Benchmark state object containing invocation parameters:
+ *                      - state.range(0): Total number of points in the dataset.
  */
 void bm_cpu_compact_spatial_hashing_file(benchmark::State &state);
 
 BENCHMARK(bm_cpu_compact_spatial_hashing)->Apply(default_args);
-BENCHMARK(bm_cpu_compact_spatial_hashing_file)->Unit(benchmark::kMillisecond);
+BENCHMARK(bm_cpu_compact_spatial_hashing_file)->Apply(default_args_file);
 
 #endif // BM_COMPACT_SPATIAL_HASHING_H
