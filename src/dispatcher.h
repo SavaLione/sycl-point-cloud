@@ -30,6 +30,7 @@
 #define DISPATCHER_H
 
 #include "probe-density.h"
+#include <cstddef>
 
 /**
  * @brief Suggested execution target.
@@ -48,9 +49,19 @@ enum class execution_target
  * viable when the entropy-modulated structural resolution exceeds the 
  * volumetric expansion constant of the topological space.
  * 
- * @param characteristics Output structural metrics from fast pre-analysis.
+ * @param[in] characteristics Output structural metrics from fast pre-analysis.
+ * @param[in] compute_units Number of compute units reported by the target GPU device (e.g., 96 for Intel Arc A310 LP) (\f$C\f$).
+ * @param[in] work_group_size Maximum work-group size supported by the target GPU device (e.g., 1024 for Intel Arc A310 LP) (\f$W\f$).
+ * @param[in] min_waves_to_hide_latency Minimum concurrent waves needed to hide memory latency (typically 2-4) (default: 1) (\f$w\f$).
  * @return execution_target Mathematically optimal hardware execution path.
+ * 
+ * @code
+ * sycl::device gpu_device {sycl::gpu_selector_v};
+ * compute_units   = gpu_device.get_info<sycl::info::device::max_compute_units>();
+ * work_group_size = gpu_device.get_info<sycl::info::device::max_work_group_size>();
+ * @endcode
  */
-execution_target evaluate_dispatch_decision(spatial_characteristics const &characteristics);
+execution_target evaluate_dispatch_decision(
+    spatial_characteristics const &characteristics, std::size_t const compute_units = 96, std::size_t work_group_size = 1024, std::size_t const min_waves_to_hide_latency = 1);
 
 #endif // DISPATCHER_H
