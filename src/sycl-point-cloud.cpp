@@ -76,7 +76,7 @@ int main(int argc, char **argv)
     }
 
     // Dispatcher decision
-    spatial_characteristics characteristics = analyze_point_cloud_fast(point_cloud, 256);
+    spatial_characteristics characteristics = probe_density<8>(point_cloud, 4096);
     execution_target decision               = evaluate_dispatch_decision(characteristics);
     std::cout << "Dispatcher effective density: " << std::to_string(characteristics.effective_density) << std::endl;
     std::cout << "Dispatcher normalized entropy: " << std::to_string(characteristics.normalized_entropy) << std::endl;

@@ -38,4 +38,18 @@
  */
 void default_args(benchmark::internal::Benchmark *b);
 
+/**
+ * @brief Standard benchmark arguments across some file benchmarks
+ * 
+ * @param b The benchmark instance
+ */
+void default_args_file(benchmark::internal::Benchmark *b);
+
+/**
+ * @brief Standard benchmark arguments across some probe density benchmarks
+ * 
+ * @param b The benchmark instance
+ */
+void default_args_probe_density_grid_sample(benchmark::internal::Benchmark *b);
+
 #endif // BM_COMMON_H

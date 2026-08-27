@@ -38,10 +38,10 @@
  */
 enum class dataset_type
 {
-    uniform,           ///< Uniform distribution. \f$E \approx 0.82-0.84\f$
-    gaussian_clusters, ///< Gaussian clusters. \f$E \approx 0.65\f$
-    sparse_lidar,      ///< Imitation of sparse lidar data. \f$E \approx 0.77\f$
-    hyper_clustered    ///< Very low entropy. \f$E \approx 0.25\f$
+    uniform,           ///< Uniform distribution. \f$E \approx 0.97\f$
+    gaussian_clusters, ///< Gaussian clusters. \f$E \approx 0.65-0.67\f$
+    sparse_lidar,      ///< Imitation of sparse lidar data. \f$E \approx 0.89-0.90\f$
+    hyper_clustered    ///< Very low entropy. \f$E \approx 0.23-0.26\f$
 };
 
 /**

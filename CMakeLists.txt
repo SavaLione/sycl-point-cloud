@@ -21,7 +21,7 @@
 cmake_minimum_required (VERSION 3.28)
 
 project(sycl-point-cloud
-    VERSION "1.0.5"
+    VERSION "1.0.6"
     DESCRIPTION "An O(1) dynamic task routing mechanism for 3D point cloud radius search operations"
     HOMEPAGE_URL "https://github.com/SavaLione/sycl-point-cloud"
     LANGUAGES C CXX
@@ -96,6 +96,7 @@ set(BENCHMARK_SRC
     benchmarks/bm-common.cpp
     benchmarks/bm-compact-spatial-hashing.cpp
     benchmarks/bm-dispatcher.cpp
+    benchmarks/bm-probe-density.cpp
     benchmarks/bm-sycl-compact-spatial-hashing.cpp
     benchmarks/bm-sycl-kd-tree.cpp
     ${SPC_SRC}

@@ -30,23 +30,34 @@
 
 void default_args(benchmark::internal::Benchmark *b)
 {
-    b->Args({10000, 0})
-        ->Args({100000, 0})
-        ->Args({1000000, 0})
-        ->Args({10000000, 0})
-        ->Args({10000, 1})
-        ->Args({100000, 1})
-        ->Args({1000000, 1})
-        ->Args({10000000, 1})
-        ->Args({10000, 2})
-        ->Args({100000, 2})
-        ->Args({1000000, 2})
-        ->Args({10000000, 2})
-        ->Args({10000, 3})
-        ->Args({100000, 3})
-        ->Args({1000000, 3})
-        ->Args({10000000, 3})
+    // clang-format off
+    b->ArgsProduct({
+        {10000, 100000, 1000000, 10000000},
+        {0, 1, 2, 3}
+    })->Unit(benchmark::kMillisecond);
+    // clang-format on
+}
+
+void default_args_file(benchmark::internal::Benchmark *b)
+{
+    b->Args({0}) // 0 means all points in a given point cloud
+        ->Args({10000})
+        ->Args({100000})
+        ->Args({1000000})
+        ->Args({10000000})
         ->Unit(benchmark::kMillisecond);
+}
+
+void default_args_probe_density_grid_sample(benchmark::internal::Benchmark *b)
+{
+    // clang-format off
+    b->ArgsProduct({
+        {10000, 100000, 1000000, 10000000, 20000000, 30000000, 40000000},
+        {0, 1, 2, 3},
+        {4, 8, 16},
+        {256, 1024, 4096}
+    })->Unit(benchmark::kMillisecond);
+    // clang-format on
 }
 
 BENCHMARK_MAIN();

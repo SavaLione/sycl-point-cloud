@@ -14,11 +14,18 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 - Added documentation
 - Added help information about the application (`-h`, `--help` flags)
 - Added usage examples to the readme
+- Added a benchmark for the spatial density probe algorithm across varying grid resolutions and sample sizes
+- Added common arguments for benchmarks
+- Added new metrics to some benchmarks
 
 ### Fixed
 - Fixed some minor typos
 - Fixed the project description in the CMake configuration file
 - Fixed a typo in `convert/sycl-point-cloud-convert.cpp`
+- Fixed entropy values mentioned in the dataset generator
 
 ### Changed
 - Suppressed warnings from AdaptiveCpp/Clang (`warning: argument unused during compilation: '-c'`)
+- Reimplemented the probe density evaluation algorithm
+- Changed the name of the probe density evaluation algorithm function
+- Changed probe density default sample size from 256 to 4096

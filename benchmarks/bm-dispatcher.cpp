@@ -47,7 +47,7 @@ void bm_adaptive_dispatcher(benchmark::State &state)
 
     for(auto _ : state)
     {
-        characteristics = analyze_point_cloud_fast(cloud, 256);
+        characteristics = probe_density<8>(cloud, 4096);
         decision        = evaluate_dispatch_decision(characteristics);
 
         benchmark::DoNotOptimize(characteristics);
@@ -57,11 +57,10 @@ void bm_adaptive_dispatcher(benchmark::State &state)
     // Assign structural characteristics to benchmark output counters
     state.counters["effective_density"]  = characteristics.effective_density;
     state.counters["normalized_entropy"] = characteristics.normalized_entropy;
-
-    // Binary indicator for target execution pathway (1.0 = SYCL GPU, 0.0 = Multi-threaded CPU)
-    state.counters["decision_is_gpu"] = (decision == execution_target::sycl_gpu) ? 1.0 : 0.0;
-
-    state.counters["dataset_type"] = static_cast<double>(type);
+    state.counters["decision_is_gpu"]    = (decision == execution_target::sycl_gpu) ? 1.0 : 0.0; // 1 - GPU, 0 - CPUs
+    state.counters["dataset_type"]       = static_cast<double>(type);
+    state.counters["grid_dim"]           = 8;
+    state.counters["sample_size"]        = 4096;
 
     state.SetItemsProcessed(state.iterations() * num_points);
 }
@@ -75,13 +74,38 @@ void bm_adaptive_dispatcher_file(benchmark::State &state)
         return;
     }
 
-    std::vector<point_3d> const cloud = load_point_cloud(env);
+    std::size_t num_points      = state.range(0);
+    std::vector<point_3d> cloud = load_point_cloud(env);
     spatial_characteristics characteristics {};
     execution_target decision {execution_target::cpu_multithreaded};
 
+    // Make the cloud smaller
+    if(num_points != 0)
+    {
+        if(cloud.size() >= num_points)
+        {
+            cloud.resize(num_points);
+        }
+        else
+        {
+            state.SkipWithMessage("Provided cloud size is smaller than the suggested testing cloud size.");
+            return;
+        }
+    }
+    else
+    {
+        num_points = cloud.size();
+    }
+
+    if(cloud.empty())
+    {
+        state.SkipWithError("Provided cloud is empty.");
+        return;
+    }
+
     for(auto _ : state)
     {
-        characteristics = analyze_point_cloud_fast(cloud, 256);
+        characteristics = probe_density<8>(cloud, 4096);
         decision        = evaluate_dispatch_decision(characteristics);
 
         benchmark::DoNotOptimize(characteristics);
@@ -91,9 +115,10 @@ void bm_adaptive_dispatcher_file(benchmark::State &state)
     // Assign structural characteristics to benchmark output counters
     state.counters["effective_density"]  = characteristics.effective_density;
     state.counters["normalized_entropy"] = characteristics.normalized_entropy;
+    state.counters["decision_is_gpu"]    = (decision == execution_target::sycl_gpu) ? 1.0 : 0.0; // 1 - GPU, 0 - CPUs
+    state.counters["grid_dim"]           = 8;
+    state.counters["sample_size"]        = 4096;
+    state.SetLabel("file=" + std::string(env));
 
-    // Binary indicator for target execution pathway (1.0 = SYCL GPU, 0.0 = Multi-threaded CPU)
-    state.counters["decision_is_gpu"] = (decision == execution_target::sycl_gpu) ? 1.0 : 0.0;
-
-    state.SetItemsProcessed(state.iterations() * cloud.size());
+    state.SetItemsProcessed(state.iterations() * num_points);
 }

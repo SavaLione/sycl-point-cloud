@@ -20,32 +20,28 @@
  * along with sycl-point-cloud. If not, see <https://www.gnu.org/licenses/>.
  */
 /**
- * @file bm-dispatcher.h
- * @brief Benchmark suite for evaluating the computational overhead and routing accuracy of the adaptive dispatcher.
+ * @file bm-probe-density.h
+ * @brief Benchmark declarations for evaluating structural resolution and normalized spatial entropy heuristics on point clouds.
  * @author Savelii Pototskii
  * @copyright Copyright (C) 2026 Savelii Pototskii (savalione.com)
  * @copyright SPDX-License-Identifier: GPL-3.0-or-later
  */
-#ifndef BM_DISPATCHER_H
-#define BM_DISPATCHER_H
+#ifndef BM_PROBE_DENSITY_H
+#define BM_PROBE_DENSITY_H
 
 #include "bm-common.h"
 
 /**
- * @brief Evaluates the computation latency of the adaptive dispatcher.
+ * @brief Benchmarks the execution latency and metric accuracy of the spatial density probe across varying grid resolutions and sample sizes.
  * 
- * @param[in,out] state The Google Benchmark state object tracking execution iterations and timing counters.
+ * @param state Google Benchmark state object containing invocation parameters:
+ *              - state.range(0): Total number of points in the dataset.
+ *              - state.range(1): Dataset topology type (dataset_type enum).
+ *              - state.range(2): Linear voxel grid resolution (grid_dim).
+ *              - state.range(3): Sub-sample size for heuristic evaluation.
  */
-void bm_adaptive_dispatcher(benchmark::State &state);
+void bm_probe_density_grid_sample(benchmark::State &state);
 
-/**
- * @brief Evaluates the computation latency of the adaptive dispatcher.
- * 
- * @param[in,out] state The Google Benchmark state object tracking execution iterations and timing counters utilizing a realistic dataset retrieved from the file system.
- */
-void bm_adaptive_dispatcher_file(benchmark::State &state);
+BENCHMARK(bm_probe_density_grid_sample)->Apply(default_args_probe_density_grid_sample);
 
-BENCHMARK(bm_adaptive_dispatcher)->Apply(default_args);
-BENCHMARK(bm_adaptive_dispatcher_file)->Apply(default_args_file);
-
-#endif // BM_DISPATCHER_H
+#endif // BM_PROBE_DENSITY_H
