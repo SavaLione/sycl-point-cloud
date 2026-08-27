@@ -18,6 +18,7 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 ### Fixed
 - Fixed some minor typos
 - Fixed the project description in the CMake configuration file
+- Fixed a typo in `convert/sycl-point-cloud-convert.cpp`
 
 ### Changed
 - Suppressed warnings from AdaptiveCpp/Clang (`warning: argument unused during compilation: '-c'`)
