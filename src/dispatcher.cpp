@@ -30,36 +30,30 @@
 
 #include <cmath>
 
-execution_target evaluate_dispatch_decision(spatial_characteristics const &characteristics)
+execution_target evaluate_dispatch_decision(
+    spatial_characteristics const &characteristics, std::size_t const compute_units, std::size_t work_group_size, std::size_t const min_waves_to_hide_latency)
 {
     if(characteristics.total_points == 0)
     {
         return execution_target::cpu_multithreaded;
     }
 
-    double const n_points = static_cast<double>(characteristics.total_points);
-    double const entropy  = static_cast<double>(characteristics.normalized_entropy);
+    // Dynamic point saturation threshold
+    const double n_saturate = static_cast<double>(compute_units * work_group_size * min_waves_to_hide_latency); // $N_{sat} = C \cdot W \cdot w$
 
-    // Topological constant (D)
-    // '3.0' represents the dimensionality of the point cloud (3D spatial data)
+    // Hardware-derived crossover resolution
     constexpr double spatial_dimensions = 3.0;
+    const double crossover_threshold    = std::pow(n_saturate, 1.0 / spatial_dimensions); // $T = \sqrt[3]{N_{sat}}$
 
-    // Structural resolution (R)
-    // Represents the linear scaling factor of a volumetric entity encompassing N points.
-    double const structural_resolution = std::pow(n_points, 1.0 / spatial_dimensions);
+    // Workload effective resolution (modulated by entropy)
+    const double n_points = static_cast<double>(characteristics.total_points);
+    const double entropy  = std::max(static_cast<double>(characteristics.normalized_entropy), 0.01);
 
-    // Effective parallel workload index
-    // Penalizes the parallel execution potential by spatial imbalance (warp divergence proxy).
-    double const effective_parallel_index = structural_resolution * entropy;
+    const double effective_volume     = n_points * entropy;
+    const double effective_resolution = std::pow(effective_volume, 1.0 / spatial_dimensions); // $\sqrt[3]{N \cdot E}$
 
-    // Volumetric expansion threshold
-    // The natural exponential boundary where volumetric parallel computation dominates over
-    // surface-area data transmission and synchronization penalties.
-    double const crossover_threshold = std::exp(spatial_dimensions);
-
-    // Dispatch decision.
-    // Target the GPU only when the parallel index outscales the topological overhead.
-    if(effective_parallel_index >= crossover_threshold)
+    // $I = \sqrt[3]{N \cdot E} \ge T$
+    if(effective_resolution >= crossover_threshold)
     {
         return execution_target::sycl_gpu;
     }

@@ -19,6 +19,7 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 - Added new metrics to some benchmarks
 - Added new metrics and documentation the compact spatial hashing (CPU) benchmark
 - Added new metrics and documentation the SYCL compact spatial hashing benchmark
+- Added documentation for the dispatcher algorithm
 
 ### Fixed
 - Fixed some minor typos
@@ -32,3 +33,4 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 - Changed the name of the probe density evaluation algorithm function
 - Changed probe density default sample size from 256 to 4096
 - Slightly changed behavior of some benchmarks
+- Reimplemented the dispatcher algorithm
