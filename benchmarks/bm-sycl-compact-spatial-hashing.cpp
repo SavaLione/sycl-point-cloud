@@ -43,7 +43,7 @@ void bm_sycl_gpu_compact_spatial_hashing(benchmark::State &state)
     dataset_type const type      = static_cast<dataset_type>(state.range(1));
 
     auto const cloud                         = generate_dataset(num_points, type);
-    std::vector<point_3d> const host_queries = {{0.0f, 0.0f, 0.0f}};
+    std::vector<point_3d> const host_queries = {cloud[0]};
 
     float const radius                      = 2.5f;
     float const cell_size                   = radius / 2.0f;
@@ -114,8 +114,34 @@ void bm_sycl_gpu_compact_spatial_hashing_file(benchmark::State &state)
         return;
     }
 
-    std::vector<point_3d> const cloud        = load_point_cloud(env);
-    std::vector<point_3d> const host_queries = {{0.0f, 0.0f, 0.0f}};
+    std::size_t num_points      = state.range(0);
+    std::vector<point_3d> cloud = load_point_cloud(env);
+
+    // Make the cloud smaller
+    if(num_points != 0)
+    {
+        if(cloud.size() >= num_points)
+        {
+            cloud.resize(num_points);
+        }
+        else
+        {
+            state.SkipWithMessage("Provided cloud size is smaller than the suggested testing cloud size.");
+            return;
+        }
+    }
+    else
+    {
+        num_points = cloud.size();
+    }
+
+    if(cloud.empty())
+    {
+        state.SkipWithError("Provided cloud is empty.");
+        return;
+    }
+
+    std::vector<point_3d> const host_queries = {cloud[0]};
     float const radius                       = 2.5f;
     float const cell_size                    = radius / 2.0f;
     std::size_t const num_queries            = host_queries.size();
@@ -127,25 +153,25 @@ void bm_sycl_gpu_compact_spatial_hashing_file(benchmark::State &state)
     for(auto _ : state)
     {
         // Allocation
-        point_3d *d_cloud             = sycl::malloc_device<point_3d>(cloud.size(), q);
+        point_3d *d_cloud             = sycl::malloc_device<point_3d>(num_points, q);
         point_3d *d_queries           = sycl::malloc_device<point_3d>(num_queries, q);
         std::size_t *d_bucket_offsets = sycl::malloc_device<std::size_t>(table_size + 1, q);
-        std::size_t *d_point_indices  = sycl::malloc_device<std::size_t>(cloud.size(), q);
+        std::size_t *d_point_indices  = sycl::malloc_device<std::size_t>(num_points, q);
         std::size_t *d_results        = sycl::malloc_device<std::size_t>(num_queries * max_results_per_query, q);
         std::size_t *d_result_counts  = sycl::malloc_device<std::size_t>(num_queries, q);
 
         // Measure PCIe host-to-device copy
         auto t_transfer_start = std::chrono::high_resolution_clock::now();
-        q.memcpy(d_cloud, cloud.data(), cloud.size() * sizeof(point_3d));
+        q.memcpy(d_cloud, cloud.data(), num_points * sizeof(point_3d));
         q.memcpy(d_queries, host_queries.data(), num_queries * sizeof(point_3d));
         q.wait();
         auto t_transfer_mid = std::chrono::high_resolution_clock::now();
 
         // Measure GPU compute execution
         auto t_compute_start = std::chrono::high_resolution_clock::now();
-        build_spatial_hash_sycl(q, d_cloud, cloud.size(), cell_size, table_size, d_bucket_offsets, d_point_indices);
+        build_spatial_hash_sycl(q, d_cloud, num_points, cell_size, table_size, d_bucket_offsets, d_point_indices);
         radius_search_sycl(
-            q, d_queries, num_queries, radius, d_cloud, cloud.size(), cell_size, table_size, d_bucket_offsets, d_point_indices, d_results, d_result_counts, max_results_per_query);
+            q, d_queries, num_queries, radius, d_cloud, num_points, cell_size, table_size, d_bucket_offsets, d_point_indices, d_results, d_result_counts, max_results_per_query);
         q.wait();
         auto t_compute_end = std::chrono::high_resolution_clock::now();
 
@@ -174,6 +200,8 @@ void bm_sycl_gpu_compact_spatial_hashing_file(benchmark::State &state)
         sycl::free(d_results, q);
         sycl::free(d_result_counts, q);
     }
+
+    state.SetLabel("file=" + std::string(env));
 }
 
 void bm_sycl_cpu_compact_spatial_hashing(benchmark::State &state)
@@ -253,7 +281,33 @@ void bm_sycl_cpu_compact_spatial_hashing_file(benchmark::State &state)
         return;
     }
 
-    std::vector<point_3d> const cloud        = load_point_cloud(env);
+    std::size_t num_points      = state.range(0);
+    std::vector<point_3d> cloud = load_point_cloud(env);
+
+    // Make the cloud smaller
+    if(num_points != 0)
+    {
+        if(cloud.size() >= num_points)
+        {
+            cloud.resize(num_points);
+        }
+        else
+        {
+            state.SkipWithMessage("Provided cloud size is smaller than the suggested testing cloud size.");
+            return;
+        }
+    }
+    else
+    {
+        num_points = cloud.size();
+    }
+
+    if(cloud.empty())
+    {
+        state.SkipWithError("Provided cloud is empty.");
+        return;
+    }
+
     std::vector<point_3d> const host_queries = {{0.0f, 0.0f, 0.0f}};
     float const radius                       = 2.5f;
     float const cell_size                    = radius / 2.0f;
