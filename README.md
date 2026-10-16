@@ -1,11 +1,8 @@
 # sycl-point-cloud
 This project is a part of a scientific paper I've written.
 
-The software implements an $O(1)$ dynamic task routing mechanism for 3D point cloud radius search operations.
+The software implements an $O(N)$ dynamic task routing mechanism for 3D point cloud radius search operations.
 By evaluating structural resolution and normalized spatial entropy, the system selects optimal execution hardware to minimize thread divergence, synchronization delays, and data transfer overhead across non-uniform datasets.
-
-The source code in this repository should work.
-I'm currently polishing and documenting everything.
 
 ## Building
 ### Dependencies and environmental variables
@@ -92,6 +89,7 @@ This project is licensed under [The GNU General Public License v3.0](https://www
 See the [LICENSE](LICENSE) file for the full license text.
 
 Copyright (C) 2026 Savelii Pototskii (savalione.com)
+Copyright (C) 2026 N.N. Krasovskii Institute of Mathematics and Mechanics of the Ural Branch of the Russian Academy of Sciences (IMM UB RAS)
 
 ### Third-Party Libraries
 This project incorporates code from several third-party libraries.

@@ -34,3 +34,4 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 - Changed probe density default sample size from 256 to 4096
 - Slightly changed behavior of some benchmarks
 - Reimplemented the dispatcher algorithm
+- The project transitioned to N.N. Krasovskii Institute of Mathematics and Mechanics of the Ural Branch of the Russian Academy of Sciences (IMM UB RAS) (see #9)

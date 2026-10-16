@@ -1,6 +1,7 @@
 /* SPDX-License-Identifier: GPL-3.0-or-later */
 /*
  * Copyright (C) 2026 Savelii Pototskii (savalione.com)
+ * Copyright (C) 2026 N.N. Krasovskii Institute of Mathematics and Mechanics of the Ural Branch of the Russian Academy of Sciences (IMM UB RAS)
  *
  * Author: Savelii Pototskii <savelii.pototskii@gmail.com>
  *
@@ -24,6 +25,7 @@
  * @brief Main application entry point for the SYCL-based heterogeneous point cloud processing framework.
  * @author Savelii Pototskii
  * @copyright Copyright (C) 2026 Savelii Pototskii (savalione.com)
+ * @copyright Copyright (C) 2026 N.N. Krasovskii Institute of Mathematics and Mechanics of the Ural Branch of the Russian Academy of Sciences (IMM UB RAS)
  * @copyright SPDX-License-Identifier: GPL-3.0-or-later
  */
 #ifndef SYCL_POINT_CLOUD_H
