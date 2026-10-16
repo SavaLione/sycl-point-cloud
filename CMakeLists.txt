@@ -1,5 +1,6 @@
 #######################################################################
 # Copyright (C) 2026 Savelii Pototskii (savalione.com)
+# Copyright (C) 2026 N.N. Krasovskii Institute of Mathematics and Mechanics of the Ural Branch of the Russian Academy of Sciences (IMM UB RAS)
 # 
 # Author: Savelii Pototskii <savelii.pototskii@gmail.com>
 # 
@@ -21,8 +22,8 @@
 cmake_minimum_required (VERSION 3.28)
 
 project(sycl-point-cloud
-    VERSION "1.0.9"
-    DESCRIPTION "An O(1) dynamic task routing mechanism for 3D point cloud radius search operations"
+    VERSION "1.0.10"
+    DESCRIPTION "An O(N) dynamic task routing mechanism for 3D point cloud radius search operations"
     HOMEPAGE_URL "https://github.com/SavaLione/sycl-point-cloud"
     LANGUAGES C CXX
 )

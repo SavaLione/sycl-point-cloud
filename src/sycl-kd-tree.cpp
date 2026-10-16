@@ -1,6 +1,7 @@
 /* SPDX-License-Identifier: GPL-3.0-or-later */
 /*
  * Copyright (C) 2026 Savelii Pototskii (savalione.com)
+ * Copyright (C) 2026 N.N. Krasovskii Institute of Mathematics and Mechanics of the Ural Branch of the Russian Academy of Sciences (IMM UB RAS)
  *
  * Author: Savelii Pototskii <savelii.pototskii@gmail.com>
  *
@@ -24,6 +25,7 @@
  * @brief Implements an array-backed, cache-coherent K-D tree structure written for SIMT architectures using SYCL.
  * @author Savelii Pototskii
  * @copyright Copyright (C) 2026 Savelii Pototskii (savalione.com)
+ * @copyright Copyright (C) 2026 N.N. Krasovskii Institute of Mathematics and Mechanics of the Ural Branch of the Russian Academy of Sciences (IMM UB RAS)
  * @copyright SPDX-License-Identifier: GPL-3.0-or-later
  */
 #include "sycl-kd-tree.h"
